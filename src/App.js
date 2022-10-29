@@ -1,24 +1,44 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import { GiBoltSpellCast } from 'react-icons/gi';
 
 function App() {
+  const [account, setAccount] = useState("");
+
+  const initConnection = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      console.log("MetaMask is installed!");
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts'
+      });
+      setAccount(accounts[0]);
+    } else {
+      console.log('Please install MetaMask!');
+    }
+  }
+
+  useEffect(() => {
+    initConnection();
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div className='page'>
+      <div className='header'>
+        <img src={require('./assets/images/logo.webp')} className='artIcon' />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          11/15
+          <span>
+            <GiBoltSpellCast style={{ marginLeft: "5px" }} />
+          </span>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+        {account === "" ? (
+          <button onClick={initConnection} className='button'>Connect</button>
+        ) : (
+          <p>...{account.substring(account.length - 7)}</p>
+        )
+        }
+      </div>
+    </div >
   );
 }
 
